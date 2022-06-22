@@ -8,9 +8,9 @@ from telegram.ext import (
     Filters,
     MessageHandler
 )
-from google.cloud import dialogflow
 
 from loggers import TgLogsHandler
+from api_google import get_response_to_message
 
 
 logger = logging.getLogger('TG_Logger')
@@ -34,24 +34,13 @@ def message_handler(
     language_code='ru_RU',
     logger=None
 ):
-    session_client = dialogflow.SessionsClient()
-
     try:
-        session = session_client.session_path(
+        reply = get_response_to_message(
             google_project_id,
-            update.effective_user.id
+            update.effective_user.id,
+            update.message.text
         )
-
-        text_input = dialogflow.TextInput(
-            text=update.message.text,
-            language_code=language_code
-        )
-        query_input = dialogflow.QueryInput(text=text_input)
-
-        response = session_client.detect_intent(
-            request={"session": session, "query_input": query_input}
-        )
-        update.message.reply_text(response.query_result.fulfillment_text)
+        update.message.reply_text(reply)
 
     except Exception as e:
         if logger:
