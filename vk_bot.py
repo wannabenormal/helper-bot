@@ -17,24 +17,19 @@ def message_handler(
     vk_api,
     google_project_id,
     language_code='ru_RU',
-    logger=None
 ):
-    try:
-        reply = get_response_to_message(
-            google_project_id,
-            event.user_id,
-            event.text,
-        )
+    reply = get_response_to_message(
+        google_project_id,
+        event.user_id,
+        event.text,
+    )
 
-        if not reply.intent.is_fallback:
-            vk_api.messages.send(
-                user_id=event.user_id,
-                message=reply.fulfillment_text,
-                random_id=random.randint(1, 1000)
-            )
-    except Exception as e:
-        if logger:
-            logger.exception(e)
+    if not reply.intent.is_fallback:
+        vk_api.messages.send(
+            user_id=event.user_id,
+            message=reply.fulfillment_text,
+            random_id=random.randint(1, 1000)
+        )
 
 
 def main():
@@ -50,12 +45,15 @@ def main():
     logger.setLevel(logging.INFO)
     logger.addHandler(VkLogsHandler(vk_api, vk_admin_id))
 
-    longpoll = VkLongPoll(vk_session)
-    logger.info('VK-Бот запущен')
+    try:
+        longpoll = VkLongPoll(vk_session)
+        logger.info('VK-Бот запущен')
 
-    for event in longpoll.listen():
-        if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-            message_handler(event, vk_api, google_project_id)
+        for event in longpoll.listen():
+            if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+                message_handler(event, vk_api, google_project_id)
+    except Exception as e:
+        logger.exception(e)
 
 
 if __name__ == '__main__':
