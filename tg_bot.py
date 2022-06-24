@@ -15,9 +15,6 @@ from api_google import get_response_to_message
 
 logger = logging.getLogger('TG_Logger')
 
-env = Env()
-env.read_env()
-
 
 def start_handler(update, context, logger=None):
     try:
@@ -48,6 +45,8 @@ def message_handler(
 
 
 def main():
+    env = Env()
+    env.read_env()
     tg_admin_id = env.str('TG_ADMIN_ID')
     google_project_id = env.str('GOOGLE_PROJECT_ID')
     language_code = env.str('LANGUAGE_CODE', 'ru_RU')

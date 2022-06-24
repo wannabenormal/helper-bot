@@ -5,11 +5,10 @@ from environs import Env
 
 from api_google import create_intent
 
-env = Env()
-env.read_env()
-
 
 def main():
+    env = Env()
+    env.read_env()
     google_project_id = env.str('GOOGLE_PROJECT_ID')
     parser = argparse.ArgumentParser('Create intents from json file')
     parser.add_argument('path', help='Path to json file')

@@ -11,9 +11,6 @@ from api_google import get_response_to_message
 
 logger = logging.getLogger('VkLogsHandler')
 
-env = Env()
-env.read_env()
-
 
 def message_handler(
     event,
@@ -42,6 +39,8 @@ def message_handler(
 
 
 def main():
+    env = Env()
+    env.read_env()
     vk_admin_id = env.str('VK_ADMIN_ID')
     google_project_id = env.str('GOOGLE_PROJECT_ID')
     vk_group_token = env.str('VK_GROUP_TOKEN')
