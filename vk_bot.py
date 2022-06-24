@@ -24,13 +24,12 @@ def message_handler(
             google_project_id,
             event.user_id,
             event.text,
-            allow_fallback=False
         )
 
-        if reply:
+        if not reply.intent.is_fallback:
             vk_api.messages.send(
                 user_id=event.user_id,
-                message=reply,
+                message=reply.fulfillment_text,
                 random_id=random.randint(1, 1000)
             )
     except Exception as e:

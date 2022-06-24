@@ -31,7 +31,7 @@ def message_handler(
         update.effective_user.id,
         update.message.text
     )
-    update.message.reply_text(reply)
+    update.message.reply_text(reply.fulfillment_text)
 
 
 def error_handler(update, context):

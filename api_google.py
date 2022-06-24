@@ -6,7 +6,6 @@ def get_response_to_message(
     session_id,
     message,
     language_code='ru_RU',
-    allow_fallback=True
 ):
     session_client = dialogflow.SessionsClient()
 
@@ -25,10 +24,7 @@ def get_response_to_message(
         request={"session": session, "query_input": query_input}
     )
 
-    if response.query_result.intent.is_fallback and not allow_fallback:
-        return None
-
-    return response.query_result.fulfillment_text
+    return response.query_result
 
 
 def create_intent(
