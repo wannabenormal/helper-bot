@@ -16,12 +16,8 @@ from api_google import get_response_to_message
 logger = logging.getLogger('TG_Logger')
 
 
-def start_handler(update, context, logger=None):
-    try:
-        update.message.reply_text('Здравствуйте!')
-    except Exception as e:
-        if logger:
-            logger.exception(e)
+def start_handler(update, context):
+    update.message.reply_text('Здравствуйте!')
 
 
 def message_handler(
@@ -29,19 +25,20 @@ def message_handler(
     context,
     google_project_id,
     language_code='ru_RU',
-    logger=None
 ):
-    try:
-        reply = get_response_to_message(
-            google_project_id,
-            update.effective_user.id,
-            update.message.text
-        )
-        update.message.reply_text(reply)
+    reply = get_response_to_message(
+        google_project_id,
+        update.effective_user.id,
+        update.message.text
+    )
+    update.message.reply_text(reply)
 
-    except Exception as e:
-        if logger:
-            logger.exception(e)
+
+def error_handler(update, context):
+    logger.error(
+        msg="Exception while handling an update:",
+        exc_info=context.error
+    )
 
 
 def main():
@@ -69,6 +66,7 @@ def main():
             )
         )
     )
+    dispatcher.add_error_handler(error_handler)
 
     updater.start_polling()
     logger.info('Telegram-Бот запущен')
